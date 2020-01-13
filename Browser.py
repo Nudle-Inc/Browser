@@ -1,3 +1,11 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Sat Dec 21 22:38:58 2019
+
+@author: jonathanziebarth - Edit of Browser on Github 
+"""
+
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
@@ -19,16 +27,11 @@ class AboutDialog(QDialog):
 
         layout = QVBoxLayout()
 
-        title = QLabel("NUDLE SEARCH BROWSER")
+        title = QLabel("The Ghost Browser")
         font = title.font()
         font.setPointSize(20)
         title.setFont(font)
 
-        layout.addWidget(title)
-
-        logo = QLabel()
-        logo.setPixmap(QPixmap(os.path.join('images', 'NUDLE N (2).png')))
-        layout.addWidget(logo)
 
         layout.addWidget(QLabel("Version 1.0"))
         layout.addWidget(QLabel("Copyright 2019 Nudle Inc."))
@@ -39,7 +42,8 @@ class AboutDialog(QDialog):
         layout.addWidget(self.buttonBox)
 
         self.setLayout(layout)
-
+#_____________________________________________________________________________
+        #MAIN WINDOW
 
 class MainWindow(QMainWindow):
     def __init__(self, *args, **kwargs):
@@ -61,23 +65,23 @@ class MainWindow(QMainWindow):
         navtb.setIconSize(QSize(17, 17))
         self.addToolBar(navtb)
 
-        back_btn = QAction(QIcon(os.path.join('images', 'back.png')), "Back", self)
+        back_btn = QAction(QIcon(os.path.join('Backward.png')), "Back", self)
         back_btn.setStatusTip("Back to previous page")
         back_btn.triggered.connect(lambda: self.tabs.currentWidget().back())
         navtb.addAction(back_btn)
 
-        next_btn = QAction(QIcon(os.path.join('images', 'forward.png')), "Forward", self)
+        next_btn = QAction(QIcon(os.path.join('Forward.png')), "Forward", self)
         next_btn.setStatusTip("Forward to next page")
         next_btn.triggered.connect(lambda: self.tabs.currentWidget().forward())
         navtb.addAction(next_btn)
 
 
-        reload_btn = QAction(QIcon(os.path.join('images', 'refresh.png')), "Reload", self)
+        reload_btn = QAction(QIcon(os.path.join('Refresh.png')), "Reload", self)
         reload_btn.setStatusTip("Reload page")
         reload_btn.triggered.connect(lambda: self.tabs.currentWidget().reload())
         navtb.addAction(reload_btn)
 
-        home_btn = QAction(QIcon(os.path.join('images', 'home.png')), "Home", self)
+        home_btn = QAction(QIcon(os.path.join('Home.png')), "Home", self)
         home_btn.setStatusTip("Go home")
         home_btn.triggered.connect(self.navigate_home)
         navtb.addAction(home_btn)
@@ -85,20 +89,21 @@ class MainWindow(QMainWindow):
         navtb.addSeparator()
 
         self.httpsicon = QLabel()  # Yes, really!
-        self.httpsicon.setPixmap(QPixmap(os.path.join('images', 'lock-nossl.png')))
+        self.httpsicon.setPixmap(QPixmap(os.path.join('lock.png')))
         navtb.addWidget(self.httpsicon)
 
         self.urlbar = QLineEdit()
         self.urlbar.returnPressed.connect(self.navigate_to_url)
         navtb.addWidget(self.urlbar)
-
-        reload_btn = QAction(QIcon(os.path.join('images', 'i3.png')), "", self)
-        reload_btn.setStatusTip("")
-        reload_btn.triggered.connect(lambda: self.tabs.currentWidget().reload())
-        navtb.addAction(reload_btn)
-
+        
+        
+    
+       
+#________________________________________________________________________________
         # Uncomment to disable native menubar on Mac
-        # self.menuBar().setNativeMenuBar(False)
+        #self.menuBar().setNativeMenuBar(False)
+
+#FILE MENU
 
         file_menu = self.menuBar().addMenu("&File")
 
@@ -106,57 +111,291 @@ class MainWindow(QMainWindow):
         new_tab_action.setStatusTip("Open a new tab")
         new_tab_action.triggered.connect(lambda _: self.add_new_tab())
         file_menu.addAction(new_tab_action)
-
-        open_file_action = QAction(QIcon(os.path.join('images', 'disk--arrow.png')), "Open file...", self)
-        open_file_action.setStatusTip("Open from file")
-        open_file_action.triggered.connect(self.open_file)
-        file_menu.addAction(open_file_action)
-
-        save_file_action = QAction(QIcon(os.path.join('images', 'disk--pencil.png')), "Save Page As...", self)
-        save_file_action.setStatusTip("Save current page to file")
-        save_file_action.triggered.connect(self.save_file)
-        file_menu.addAction(save_file_action)
-
-        print_action = QAction(QIcon(os.path.join('images', 'printer.png')), "Print...", self)
-        print_action.setStatusTip("Print current page")
-        print_action.triggered.connect(self.print_page)
+        
+        new_window_action = QAction(QIcon(os.path.join('images', 'ui-tab--plus.png')), "New Window", self)
+        new_window_action.setStatusTip("Open a new window")
+        new_window_action.triggered.connect(lambda _: self.add_new_window())
+        file_menu.addAction(new_window_action)
+        
+        last_tab_action = QAction(QIcon(os.path.join('images', 'ui-tab--plus.png')), "Reopen Last Tab", self)
+        last_tab_action.setStatusTip("Open a new window")
+        last_tab_action.triggered.connect(lambda _: self.open_last_tab())
+        file_menu.addAction(last_tab_action)
+        
+        open_file_action = QAction(QIcon(os.path.join('images', 'ui-tab--plus.png')), "Open File...", self)
+        open_file_action.setStatusTip("Open file")
+        open_file_action.triggered.connect(lambda _: self.open_file())
+        file_menu.addAction(open_file_action )
+        
+        close_window_action = QAction(QIcon(os.path.join('images', 'ui-tab--plus.png')), "Close Window", self)
+        close_window_action.setStatusTip("Close window")
+        close_window_action.triggered.connect(lambda _: self.close_window())
+        file_menu.addAction(close_window_action)
+        
+        close_tab_action = QAction(QIcon(os.path.join('images', 'ui-tab--plus.png')), "Close Tab", self)
+        close_tab_action.setStatusTip("Close tab")
+        close_tab_action.triggered.connect(lambda _: self.close_current_tab())
+        file_menu.addAction(close_tab_action)
+        
+        save_page_as_action = QAction(QIcon(os.path.join('images', 'ui-tab--plus.png')), "Save Page As", self)
+        save_page_as_action.setStatusTip("Save Page As")
+        save_page_as_action.triggered.connect(lambda _: self.save_page_as())
+        file_menu.addAction(save_page_as_action)
+        
+        print_action = QAction(QIcon(os.path.join('images', 'ui-tab--plus.png')), "Print...", self)
+        print_action.setStatusTip("Print")
+        print_action.triggered.connect(lambda _: self.print())
         file_menu.addAction(print_action)
+#_____________________________________________________________
+        edit_menu = self.menuBar().addMenu("&Edit")
 
-        history_menu = self.menuBar().addMenu("History")
+        undo_action = QAction(QIcon(os.path.join('images', 'Forward.png')),"Undo Do", self)
+        undo_action.setStatusTip("Go to nudle.com")
+        undo_action.triggered.connect(self.undo_typing)
+        edit_menu.addAction(undo_action)
+        
+        redo_action = QAction(QIcon(os.path.join('images', 'Forward.png')),"Redo", self)
+        redo_action.setStatusTip("Go to nudle.com")
+        redo_action.triggered.connect(self.redo)
+        edit_menu.addAction(redo_action)
+        
+        cut_action = QAction(QIcon(os.path.join('images', 'Forward.png')),"Cut", self)
+        cut_action.setStatusTip("Go to nudle.com")
+        cut_action.triggered.connect(self.cut)
+        edit_menu.addAction(cut_action)
+        
+        copy_action = QAction(QIcon(os.path.join('images', 'Forward.png')),"copy", self)
+        copy_action.setStatusTip("Go to nudle.com")
+        copy_action.triggered.connect(self.copy)
+        edit_menu.addAction(copy_action)
+        
+        paste_action = QAction(QIcon(os.path.join('images', 'Forward.png')),"Nudle", self)
+        paste_action.setStatusTip("Go to nudle.com")
+        paste_action.triggered.connect(self.navigate_nudle)
+        edit_menu.addAction(paste_action)
+        
+        navigate_nudle_action = QAction(QIcon(os.path.join('images', 'Forward.png')),"Nudle", self)
+        navigate_nudle_action.setStatusTip("Go to nudle.com")
+        navigate_nudle_action.triggered.connect(self.navigate_nudle)
+        edit_menu.addAction(navigate_nudle_action)
+        
+        navigate_nudle_action = QAction(QIcon(os.path.join('images', 'Forward.png')),"Nudle", self)
+        navigate_nudle_action.setStatusTip("Go to nudle.com")
+        navigate_nudle_action.triggered.connect(self.navigate_nudle)
+        edit_menu.addAction(navigate_nudle_action)
+        
+        navigate_nudle_action = QAction(QIcon(os.path.join('images', 'Forward.png')),"Nudle", self)
+        navigate_nudle_action.setStatusTip("Go to nudle.com")
+        navigate_nudle_action.triggered.connect(self.navigate_nudle)
+        edit_menu.addAction(navigate_nudle_action)
+        
+        navigate_nudle_action = QAction(QIcon(os.path.join('images', 'Forward.png')),"Nudle", self)
+        navigate_nudle_action.setStatusTip("Go to nudle.com")
+        navigate_nudle_action.triggered.connect(self.navigate_nudle)
+        edit_menu.addAction(navigate_nudle_action)
+        
+        navigate_nudle_action = QAction(QIcon(os.path.join('images', 'Forward.png')),"Nudle", self)
+        navigate_nudle_action.setStatusTip("Go to nudle.com")
+        navigate_nudle_action.triggered.connect(self.navigate_nudle)
+        edit_menu.addAction(navigate_nudle_action)
+  #_____________________________________________________________ 
+        view_menu = self.menuBar().addMenu("&View")
 
-        show_history_action = QAction(QIcon(os.path.join('images', 'lifebuoy.png')), "nudle Homepage", self)
-        show_history_action.setStatusTip("History")
-        show_history_action.triggered.connect(self.show_history_action)
-        history_menu.addAction(show_history_action)
+        navigate_nudle_action = QAction(QIcon(os.path.join('images', 'Forward.png')),"Nudle", self)
+        navigate_nudle_action.setStatusTip("Go to nudle.com")
+        navigate_nudle_action.triggered.connect(self.navigate_nudle)
+        view_menu.addAction(navigate_nudle_action)
+        
+        navigate_nudle_action = QAction(QIcon(os.path.join('images', 'Forward.png')),"Nudle", self)
+        navigate_nudle_action.setStatusTip("Go to nudle.com")
+        navigate_nudle_action.triggered.connect(self.navigate_nudle)
+        edit_menu.addAction(navigate_nudle_action)
+        
+        navigate_nudle_action = QAction(QIcon(os.path.join('images', 'Forward.png')),"Nudle", self)
+        navigate_nudle_action.setStatusTip("Go to nudle.com")
+        navigate_nudle_action.triggered.connect(self.navigate_nudle)
+        edit_menu.addAction(navigate_nudle_action)
+        
+        navigate_nudle_action = QAction(QIcon(os.path.join('images', 'Forward.png')),"Nudle", self)
+        navigate_nudle_action.setStatusTip("Go to nudle.com")
+        navigate_nudle_action.triggered.connect(self.navigate_nudle)
+        edit_menu.addAction(navigate_nudle_action)
+        
+        navigate_nudle_action = QAction(QIcon(os.path.join('images', 'Forward.png')),"Nudle", self)
+        navigate_nudle_action.setStatusTip("Go to nudle.com")
+        navigate_nudle_action.triggered.connect(self.navigate_nudle)
+        edit_menu.addAction(navigate_nudle_action)
+        
+        navigate_nudle_action = QAction(QIcon(os.path.join('images', 'Forward.png')),"Nudle", self)
+        navigate_nudle_action.setStatusTip("Go to nudle.com")
+        navigate_nudle_action.triggered.connect(self.navigate_nudle)
+        edit_menu.addAction(navigate_nudle_action)
+        
+        navigate_nudle_action = QAction(QIcon(os.path.join('images', 'Forward.png')),"Nudle", self)
+        navigate_nudle_action.setStatusTip("Go to nudle.com")
+        navigate_nudle_action.triggered.connect(self.navigate_nudle)
+        edit_menu.addAction(navigate_nudle_action)
+        
+        navigate_nudle_action = QAction(QIcon(os.path.join('images', 'Forward.png')),"Nudle", self)
+        navigate_nudle_action.setStatusTip("Go to nudle.com")
+        navigate_nudle_action.triggered.connect(self.navigate_nudle)
+        edit_menu.addAction(navigate_nudle_action)
+        
+        navigate_nudle_action = QAction(QIcon(os.path.join('images', 'Forward.png')),"Nudle", self)
+        navigate_nudle_action.setStatusTip("Go to nudle.com")
+        navigate_nudle_action.triggered.connect(self.navigate_nudle)
+        edit_menu.addAction(navigate_nudle_action)
+        
+        navigate_nudle_action = QAction(QIcon(os.path.join('images', 'Forward.png')),"Nudle", self)
+        navigate_nudle_action.setStatusTip("Go to nudle.com")
+        navigate_nudle_action.triggered.connect(self.navigate_nudle)
+        edit_menu.addAction(navigate_nudle_action)
+        
+        navigate_nudle_action = QAction(QIcon(os.path.join('images', 'Forward.png')),"Nudle", self)
+        navigate_nudle_action.setStatusTip("Go to nudle.com")
+        navigate_nudle_action.triggered.connect(self.navigate_nudle)
+        edit_menu.addAction(navigate_nudle_action)
+  #_____________________________________________________________ 
+        history_menu = self.menuBar().addMenu("&History")
 
+        navigate_nudle_action = QAction(QIcon(os.path.join('images', 'Forward.png')),"Nudle", self)
+        navigate_nudle_action.setStatusTip("Go to nudle.com")
+        navigate_nudle_action.triggered.connect(self.navigate_nudle)
+        history_menu.addAction(navigate_nudle_action)
+        
+        navigate_nudle_action = QAction(QIcon(os.path.join('images', 'Forward.png')),"Nudle", self)
+        navigate_nudle_action.setStatusTip("Go to nudle.com")
+        navigate_nudle_action.triggered.connect(self.navigate_nudle)
+        edit_menu.addAction(navigate_nudle_action)
+        
+        navigate_nudle_action = QAction(QIcon(os.path.join('images', 'Forward.png')),"Nudle", self)
+        navigate_nudle_action.setStatusTip("Go to nudle.com")
+        navigate_nudle_action.triggered.connect(self.navigate_nudle)
+        edit_menu.addAction(navigate_nudle_action)
+        
+        #Recently Closed 
+        
+        #history 
+        
+  #_____________________________________________________________ 
+        bookmark_menu = self.menuBar().addMenu("&Bookmarks")
+
+        navigate_nudle_action = QAction(QIcon(os.path.join('images', 'Forward.png')),"Nudle", self)
+        navigate_nudle_action.setStatusTip("Go to nudle.com")
+        navigate_nudle_action.triggered.connect(self.navigate_nudle)
+        bookmark_menu.addAction(navigate_nudle_action)
+        
+        navigate_nudle_action = QAction(QIcon(os.path.join('images', 'Forward.png')),"Nudle", self)
+        navigate_nudle_action.setStatusTip("Go to nudle.com")
+        navigate_nudle_action.triggered.connect(self.navigate_nudle)
+        bookmark_menu.addAction(navigate_nudle_action)
+        
+        navigate_nudle_action = QAction(QIcon(os.path.join('images', 'Forward.png')),"Nudle", self)
+        navigate_nudle_action.setStatusTip("Go to nudle.com")
+        navigate_nudle_action.triggered.connect(self.navigate_nudle)
+        bookmark_menu.addAction(navigate_nudle_action)
+  #______________________________________________________ 
+        profile_menu = self.menuBar().addMenu("&Profiles")
+
+        navigate_nudle_action = QAction(QIcon(os.path.join('images', 'Forward.png')),"Nudle", self)
+        navigate_nudle_action.setStatusTip("Go to nudle.com")
+        navigate_nudle_action.triggered.connect(self.navigate_nudle)
+        profile_menu.addAction(navigate_nudle_action)
+    #______________________________________________________ 
+        tab_menu = self.menuBar().addMenu("&Tab")
+
+        navigate_nudle_action = QAction(QIcon(os.path.join('images', 'Forward.png')),"Nudle", self)
+        navigate_nudle_action.setStatusTip("Go to nudle.com")
+        navigate_nudle_action.triggered.connect(self.navigate_nudle)
+        tab_menu.addAction(navigate_nudle_action)
+        
+        navigate_nudle_action = QAction(QIcon(os.path.join('images', 'Forward.png')),"Nudle", self)
+        navigate_nudle_action.setStatusTip("Go to nudle.com")
+        navigate_nudle_action.triggered.connect(self.navigate_nudle)
+        bookmark_menu.addAction(navigate_nudle_action)
+        
+        navigate_nudle_action = QAction(QIcon(os.path.join('images', 'Forward.png')),"Nudle", self)
+        navigate_nudle_action.setStatusTip("Go to nudle.com")
+        navigate_nudle_action.triggered.connect(self.navigate_nudle)
+        bookmark_menu.addAction(navigate_nudle_action)
+        
+        navigate_nudle_action = QAction(QIcon(os.path.join('images', 'Forward.png')),"Nudle", self)
+        navigate_nudle_action.setStatusTip("Go to nudle.com")
+        navigate_nudle_action.triggered.connect(self.navigate_nudle)
+        bookmark_menu.addAction(navigate_nudle_action)
+        
+        navigate_nudle_action = QAction(QIcon(os.path.join('images', 'Forward.png')),"Nudle", self)
+        navigate_nudle_action.setStatusTip("Go to nudle.com")
+        navigate_nudle_action.triggered.connect(self.navigate_nudle)
+        bookmark_menu.addAction(navigate_nudle_action)
+        
+        navigate_nudle_action = QAction(QIcon(os.path.join('images', 'Forward.png')),"Nudle", self)
+        navigate_nudle_action.setStatusTip("Go to nudle.com")
+        navigate_nudle_action.triggered.connect(self.navigate_nudle)
+        bookmark_menu.addAction(navigate_nudle_action)
+  #_____________________________________________________________    
+        window_menu = self.menuBar().addMenu("&Window")
+
+        navigate_nudle_action = QAction(QIcon(os.path.join('images', 'Forward.png')),"Nudle", self)
+        navigate_nudle_action.setStatusTip("Go to nudle.com")
+        navigate_nudle_action.triggered.connect(self.navigate_nudle)
+        window_menu.addAction(navigate_nudle_action)
+        
+        navigate_nudle_action = QAction(QIcon(os.path.join('images', 'Forward.png')),"Nudle", self)
+        navigate_nudle_action.setStatusTip("Go to nudle.com")
+        navigate_nudle_action.triggered.connect(self.navigate_nudle)
+        window_menu.addAction(navigate_nudle_action)
+        
+        navigate_nudle_action = QAction(QIcon(os.path.join('images', 'Forward.png')),"Nudle", self)
+        navigate_nudle_action.setStatusTip("Go to nudle.com")
+        navigate_nudle_action.triggered.connect(self.navigate_nudle)
+        window_menu.addAction(navigate_nudle_action)
+        
+        navigate_nudle_action = QAction(QIcon(os.path.join('images', 'Forward.png')),"Nudle", self)
+        navigate_nudle_action.setStatusTip("Go to nudle.com")
+        navigate_nudle_action.triggered.connect(self.navigate_nudle)
+        window_menu.addAction(navigate_nudle_action)
+        
+        navigate_nudle_action = QAction(QIcon(os.path.join('images', 'Forward.png')),"Nudle", self)
+        navigate_nudle_action.setStatusTip("Go to nudle.com")
+        navigate_nudle_action.triggered.connect(self.navigate_nudle)
+        window_menu.addAction(navigate_nudle_action)
+        
+        navigate_nudle_action = QAction(QIcon(os.path.join('images', 'Forward.png')),"Nudle", self)
+        navigate_nudle_action.setStatusTip("Go to nudle.com")
+        navigate_nudle_action.triggered.connect(self.navigate_nudle)
+        window_menu.addAction(navigate_nudle_action)
+        
+        navigate_nudle_action = QAction(QIcon(os.path.join('images', 'Forward.png')),"Nudle", self)
+        navigate_nudle_action.setStatusTip("Go to nudle.com")
+        navigate_nudle_action.triggered.connect(self.navigate_nudle)
+        window_menu.addAction(navigate_nudle_action)
+        
+        navigate_nudle_action = QAction(QIcon(os.path.join('images', 'Forward.png')),"Nudle", self)
+        navigate_nudle_action.setStatusTip("Go to nudle.com")
+        navigate_nudle_action.triggered.connect(self.navigate_nudle)
+        window_menu.addAction(navigate_nudle_action)
+  #_____________________________________________________________    
         help_menu = self.menuBar().addMenu("&Help")
 
-        about_action = QAction(QIcon(os.path.join('images', 'question.png')), "About Nudle Search Browser", self)
-        about_action.setStatusTip("Find out more about Nudle Search Browser")  # Hungry!
-        about_action.triggered.connect(self.about)
-        help_menu.addAction(about_action)
-
-        navigate_nudle_action = QAction(QIcon(os.path.join('images', 'lifebuoy.png')),"nudle Homepage", self)
+        navigate_nudle_action = QAction(QIcon(os.path.join('images', 'Forward.png')),"Nudle", self)
         navigate_nudle_action.setStatusTip("Go to nudle.com")
         navigate_nudle_action.triggered.connect(self.navigate_nudle)
         help_menu.addAction(navigate_nudle_action)
-
-
-
-
+        
+        
+  #_____________________________________________________________    
 
         self.add_new_tab(QUrl('http://www.google.com'), 'Homepage')
 
         self.show()
 
-        self.setWindowTitle("Nudle Search Browser")
-        self.setWindowIcon(QIcon(os.path.join('images', 'NUDLE N (2).png')))
-
-
+#_______________________
+        
     def add_new_tab(self, qurl=None, label="Blank"):
 
         if qurl is None:
-            qurl = QUrl('')
+            qurl = QUrl('http://www.google.com')
 
         browser = QWebEngineView()
         browser.setUrl(qurl)
@@ -175,6 +414,11 @@ class MainWindow(QMainWindow):
     def tab_open_doubleclick(self, i):
         if i == -1:  # No tab under the click
             self.add_new_tab()
+    
+    def tab_open_doubleclick(self, i):
+        if i == -1:  # No tab under the click
+            self.add_new_tab()      
+        
 
     def current_tab_changed(self, i):
         qurl = self.tabs.currentWidget().url()
@@ -186,48 +430,11 @@ class MainWindow(QMainWindow):
             return
 
         self.tabs.removeTab(i)
-
-    def update_title(self, browser):
-        if browser != self.tabs.currentWidget():
-            # If this signal is not from the current tab, ignore
-            return
-
-        title = self.tabs.currentWidget().page().title()
-        self.setWindowTitle("%s - Nudle Search Browser" % title)
-
+#_______________________________________________________________________________
     def navigate_nudle(self):
-        self.tabs.currentWidget().setUrl(QUrl("https://nudleinc1.wixsite.com/nudle"))
+        self.tabs.currentWidget().setUrl(QUrl("https://nudleinc.xyz"))
 
-    def about(self):
-        dlg = AboutDialog()
-        dlg.exec_()
-
-    def open_file(self):
-        filename, _ = QFileDialog.getOpenFileName(self, "Open file", "",
-                                                  "Hypertext Markup Language (*.htm *.html);;"
-                                                  "All files (*.*)")
-
-        if filename:
-            with open(filename, 'r') as f:
-                html = f.read()
-
-            self.tabs.currentWidget().setHtml(html)
-            self.urlbar.setText(filename)
-
-    def save_file(self):
-        filename, _ = QFileDialog.getSaveFileName(self, "Save Page As", "",
-                                                  "Hypertext Markup Language (*.htm *html);;"
-                                                  "All files (*.*)")
-
-        if filename:
-            html = self.tabs.currentWidget().page().mainFrame().toHtml()
-            with open(filename, 'w') as f:
-                f.write(html.encode('utf8'))
-
-    def print_page(self):
-        dlg = QPrintPreviewDialog()
-        dlg.paintRequested.connect(self.browser.print_)
-        dlg.exec_()
+#_______________________
 
     def navigate_home(self):
         self.tabs.currentWidget().setUrl(QUrl("http://www.google.com"))
@@ -238,7 +445,7 @@ class MainWindow(QMainWindow):
             q.setScheme("http")
 
         self.tabs.currentWidget().setUrl(q)
-
+#____________________
     def update_urlbar(self, q, browser=None):
 
         if browser != self.tabs.currentWidget():
@@ -247,22 +454,24 @@ class MainWindow(QMainWindow):
 
         if q.scheme() == 'https':
             # Secure padlock icon
-            self.httpsicon.setPixmap(QPixmap(os.path.join('images', 'lock-ssl.png')))
+            self.httpsicon.setPixmap(QPixmap(os.path.join('lock.png')))
 
         else:
             # Insecure padlock icon
-            self.httpsicon.setPixmap(QPixmap(os.path.join('images', 'lock-nossl.png')))
+            self.httpsicon.setPixmap(QPixmap(os.path.join('stop.png')))
 
         self.urlbar.setText(q.toString())
         self.urlbar.setCursorPosition(0)
-
+#_______________________
     def show_history_action(self):
         self.tab_open_doubleclick(QWebEngineHistory)
-
+#_______________________
+       
+        
 app = QApplication(sys.argv)
-app.setApplicationName("Nudle Search Browser")
+app.setApplicationName("Ghost")
 app.setOrganizationName("Nudle")
-app.setOrganizationDomain("NudleSearch.com")
+app.setOrganizationDomain("Nudleinc.xyz")
 
 window = MainWindow()
 
